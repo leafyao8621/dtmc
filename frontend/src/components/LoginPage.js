@@ -37,7 +37,7 @@ class LoginPage extends Component {
         }
         return (
             <main className="container">
-                <h1>XSS</h1>
+                <h1>Discrete Time Markov Chain</h1>
                 <Form onSubmit={login}>
                     <FormGroup>
                         <Label for="un">User Name</Label>
