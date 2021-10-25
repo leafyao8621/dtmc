@@ -1,3 +1,5 @@
 *.sqlite3
 backend/settings.py
 __pycache__
+*.sh
+migrations
