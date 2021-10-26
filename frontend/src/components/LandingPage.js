@@ -5,7 +5,6 @@ import { w3cwebsocket } from 'websocket';
 class LandingPage extends Component {
     ws = null;
     stale = true;
-    block = false;
     constructor(props) {
         super(props);
         this.state = {
@@ -66,50 +65,26 @@ class LandingPage extends Component {
                 <tr key={i}>
                     {
                         Array.from(Array(this.state.dim).keys()).map((j) => {
-                            try {
-                                return (
-                                    <td key={`${i}-${j}`}>
-                                        {`${i}-${j}`}
-                                        <Input
-                                            type="number"
-                                            step="0.0000000000001"
-                                            value={this.state.t[i][j].toString()}
-                                            onChange={({ target }) => {
-                                                let t =
-                                                    JSON.parse(
-                                                        JSON.stringify(
-                                                            this.state.t
-                                                        )
-                                                    );
-                                                t[i][j] = parseFloat(target.value);
-                                                this.setState({t: t});
-                                            }}
-                                        />
-                                    </td>
-                                );
-                            } catch (error) {
-                                return (
-                                    <td key={`${i}-${j}`}>
-                                        {`${i}-${j}`}
-                                        <Input
-                                            type="number"
-                                            step="0.0000000000001"
-                                            value={0}
-                                            onChange={({ target }) => {
-                                                let t =
-                                                    JSON.parse(
-                                                        JSON.stringify(
-                                                            this.state.t
-                                                        )
-                                                    );
-                                                t[i][j] = parseFloat(target.value);
-                                                this.setState({t: t});
-                                            }}
-                                        />
-                                    </td>
-                                );
-                            }
-
+                            return (
+                                <td key={`${i}-${j}`}>
+                                    {`${i}-${j}`}
+                                    <Input
+                                        type="number"
+                                        step="0.0000000000001"
+                                        value={this.state.t[i][j].toString()}
+                                        onChange={({ target }) => {
+                                            let t =
+                                                JSON.parse(
+                                                    JSON.stringify(
+                                                        this.state.t
+                                                    )
+                                                );
+                                            t[i][j] = parseFloat(target.value);
+                                            this.setState({t: t});
+                                        }}
+                                    />
+                                </td>
+                            );
                         })
                     }
                 </tr>
