@@ -48,7 +48,7 @@ class LandingPage extends Component {
                     <Input
                         type="number"
                         step="0.0000000000001"
-                        value={this.state.s0[item] !== undefined ? this.state.s0[item].toString() : "0"}
+                        value={this.state.s0[item].toString()}
                         onChange={({ target }) => {
                             let s0 = [...this.state.s0];
                             s0[item] = parseFloat(target.value);
