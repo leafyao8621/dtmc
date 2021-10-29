@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Label, Input, Button } from "reactstrap";
 import { w3cwebsocket } from 'websocket';
+import LineChart from "./LineChart";
 
 class LandingPage extends Component {
     ws = null;
     stale = true;
+    valid_s0 = true;
+    valid_t = true;
     constructor(props) {
         super(props);
         this.state = {
@@ -51,8 +54,16 @@ class LandingPage extends Component {
                         value={this.state.s0[item].toString()}
                         onChange={({ target }) => {
                             let s0 = [...this.state.s0];
-                            s0[item] = parseFloat(target.value);
-                            this.setState({s0: s0});
+                            if (!isNaN(parseFloat(target.value))) {
+                                this.valid_s0 = true;
+                                s0[item] = parseFloat(target.value);
+                                this.setState({s0: s0});
+                            } else {
+                                this.valid_s0 = false;
+                                s0[item] = target.value;
+                                this.setState({s0: s0});
+                            }
+
                         }}
                     />
                 </td>
@@ -79,8 +90,16 @@ class LandingPage extends Component {
                                                         this.state.t
                                                     )
                                                 );
-                                            t[i][j] = parseFloat(target.value);
-                                            this.setState({t: t});
+                                            if (!isNaN(parseFloat(target.value))) {
+                                                this.valid_t = true;
+                                                t[i][j] = parseFloat(target.value);
+                                                this.setState({t: t});
+                                            } else {
+                                                this.valid_t = false;
+                                                t[i][j] = target.value;
+                                                this.setState({t: t});
+                                            }
+
                                         }}
                                     />
                                 </td>
@@ -149,12 +168,16 @@ class LandingPage extends Component {
     }
     render() {
         let handler = (e) => {
-            this.ws.send(JSON.stringify({
-                s0: this.state.s0,
-                t: this.state.t,
-                iter: this.state.iter,
-                hist: this.state.hist
-            }));
+            if (this.valid_s0 && this.valid_t) {
+                this.ws.send(JSON.stringify({
+                    s0: this.state.s0,
+                    t: this.state.t,
+                    iter: this.state.iter,
+                    hist: this.state.hist
+                }));
+            } else {
+                alert("invalid!");
+            }
         }
         return (
             <main className="container">
@@ -165,6 +188,8 @@ class LandingPage extends Component {
                         <Label>Dimension</Label>
                         <Input
                             key="dim"
+                            min={1}
+                            max={10}
                             onChange={({ target }) => {
                                 this.stale = true;
                                 let len = parseInt(target.value)
@@ -231,12 +256,21 @@ class LandingPage extends Component {
                         </tbody>
                     </table>
                     <h2>Result</h2>
-                    <table className="table">
-                        { this.renderResultHeader() }
-                        <tbody>
-                            { this.renderResult() }
-                        </tbody>
-                    </table>
+                    <div>
+                        <LineChart
+                            stale={this.stale}
+                            hist={this.state.hist}
+                            data={this.state.result}
+                        />
+                    </div>
+                    <div>
+                        <table className="table">
+                            { this.renderResultHeader() }
+                            <tbody>
+                                { this.renderResult() }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
         );
