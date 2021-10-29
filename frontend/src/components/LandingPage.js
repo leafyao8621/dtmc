@@ -14,11 +14,11 @@ class LandingPage extends Component {
             dim: 3,
             iter: 100,
             hist: false,
-            s0: [1, 0, 0],
+            s0: ["1", "0", "0"],
             t: [
-                [0, 0.5, 0.5],
-                [0.5, 0, 0.5],
-                [0.5, 0.5, 0]
+                ["0", "0.5", "0.5"],
+                ["0.5", "0", "0.5"],
+                ["0.5", "0.5", "0"]
             ],
             result: []
         };
@@ -51,19 +51,15 @@ class LandingPage extends Component {
                     <Input
                         type="number"
                         step="0.0000000000001"
-                        value={this.state.s0[item].toString()}
+                        value={this.state.s0[item]}
                         onChange={({ target }) => {
                             let s0 = [...this.state.s0];
-                            if (!isNaN(parseFloat(target.value))) {
-                                this.valid_s0 = true;
-                                s0[item] = parseFloat(target.value);
-                                this.setState({s0: s0});
-                            } else {
-                                this.valid_s0 = false;
-                                s0[item] = target.value;
-                                this.setState({s0: s0});
-                            }
-
+                            this.valid_s0 =
+                                !isNaN(
+                                    parseFloat(target.value)
+                                );
+                            s0[item] = target.value;
+                            this.setState({s0: s0});
                         }}
                     />
                 </td>
@@ -82,7 +78,7 @@ class LandingPage extends Component {
                                     <Input
                                         type="number"
                                         step="0.0000000000001"
-                                        value={this.state.t[i][j].toString()}
+                                        value={this.state.t[i][j]}
                                         onChange={({ target }) => {
                                             let t =
                                                 JSON.parse(
@@ -90,16 +86,12 @@ class LandingPage extends Component {
                                                         this.state.t
                                                     )
                                                 );
-                                            if (!isNaN(parseFloat(target.value))) {
-                                                this.valid_t = true;
-                                                t[i][j] = parseFloat(target.value);
-                                                this.setState({t: t});
-                                            } else {
-                                                this.valid_t = false;
-                                                t[i][j] = target.value;
-                                                this.setState({t: t});
-                                            }
-
+                                            this.valid_t =
+                                                !isNaN(
+                                                    parseFloat(target.value)
+                                                );
+                                            t[i][j] = target.value;
+                                            this.setState({t: t});
                                         }}
                                     />
                                 </td>
@@ -169,9 +161,15 @@ class LandingPage extends Component {
     render() {
         let handler = (e) => {
             if (this.valid_s0 && this.valid_t) {
+                let s0 = this.state.s0.map((item) => parseFloat(item));
+                let t = this.state.t.map((i) => {
+                    return i.map((j) => {
+                        return parseFloat(j);
+                    });
+                });
                 this.ws.send(JSON.stringify({
-                    s0: this.state.s0,
-                    t: this.state.t,
+                    s0: s0,
+                    t: t,
                     iter: this.state.iter,
                     hist: this.state.hist
                 }));
